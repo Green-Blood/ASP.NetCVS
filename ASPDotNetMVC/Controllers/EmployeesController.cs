@@ -16,9 +16,9 @@ namespace ASPDotNetMVC.Controllers
         private ASPDotNetMVCContext db = new ASPDotNetMVCContext();
 
         // GET: Employees
-        public ActionResult Index()
+        public ActionResult Index(string searchString)
         {
-            return View(db.Employees.ToList());
+            return View(db.Employees.Where(x => x.Forename.Contains(searchString) || x.Surname.Contains(searchString) || searchString == null).ToList());
         }
 
         // GET: Employees/Details/5
