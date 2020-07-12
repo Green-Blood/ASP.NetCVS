@@ -5,7 +5,8 @@ namespace ASPDotNetMVC.Models
     public class Employee
     {
          
-        [Key]
+        
+        public  int Id { get; set; }
         public string Payroll_Number { get; set; }
         public string Forename { get; set; }
         public string Surname { get; set; }

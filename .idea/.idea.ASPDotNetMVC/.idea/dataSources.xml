@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="ASPDotNetMVCContext" uuid="e6986cc4-a8d8-47a5-80a2-9d9da439cb24">
+      <driver-ref>sqlserver.jtds</driver-ref>
+      <synchronize>true</synchronize>
+      <imported>true</imported>
+      <jdbc-driver>net.sourceforge.jtds.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:jtds:sqlserver://./ASPDotNetMVCContext-20200712223819;instance=&lt;pipe name&gt;;namedPipe=true</jdbc-url>
+      <jdbc-additional-properties>
+        <property name="LOCAL_DB_INSTANCE" value="MSSQLLocalDB" />
+        <property name="LOCAL_DB_EXECUTABLE" value="C:\Program Files\Microsoft SQL Server\130\Tools\Binn\SqlLocalDB.exe" />
+      </jdbc-additional-properties>
+    </data-source>
+  </component>
+</project>
