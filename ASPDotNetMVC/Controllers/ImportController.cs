@@ -79,10 +79,5 @@ namespace ASPDotNetMVC.Controllers
             }
             return View();
         }
-        public ActionResult Create()
-        {
-            return View();
-        }
     }
-    
 }
