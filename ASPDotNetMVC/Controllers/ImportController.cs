@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using ASPDotNetMVC.Data;
 using ASPDotNetMVC.Models;
 
 namespace ASPDotNetMVC.Controllers
 {
+    
     public class ImportController : Controller
     {
+        private ASPDotNetMVCContext db = new ASPDotNetMVCContext();
         // GET: Import
         public ActionResult Index()
         {
@@ -29,7 +33,7 @@ namespace ASPDotNetMVC.Controllers
                 {
                     string fileExtension = Path.GetExtension(postedFile.FileName);
  
-                    //Validate uploaded file and return error.
+                    //Check uploaded file extension
                     if (fileExtension != ".csv")
                     {
                         ViewBag.Message = "Please select the csv file with .csv extension";
@@ -37,17 +41,21 @@ namespace ASPDotNetMVC.Controllers
                     }
  
  
+                    // Create list of Employees
                     var employees = new List<Employee>();
                     using (var sreader = new StreamReader(postedFile.InputStream))
                     {
-                        //First line is header. If header is not passed in csv then we can neglect the below line.
+                        // Header line.  
                         string[] headers = sreader.ReadLine()?.Split(',');
-                        //Loop through the records
+                        
+                        // Loop though all records
                         while (!sreader.EndOfStream)
                         {
                             string[] rows = sreader.ReadLine()?.Split(',');
 
+                            // If we have records in a file, add them
                             if (rows != null)
+                                
                                 employees.Add(new Employee
                                 {
                                     Payroll_Number = rows[0].ToString(),
@@ -65,7 +73,13 @@ namespace ASPDotNetMVC.Controllers
                                 });
                         }
                     }
- 
+
+                    // Add model into database
+                    foreach (var employee in employees)
+                    {
+                        db.Employees.Add(employee);
+                        db.SaveChanges();
+                    }
                     return View("View", employees);
                 }
                 catch (Exception ex)

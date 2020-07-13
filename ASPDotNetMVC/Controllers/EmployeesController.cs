@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using ASPDotNetMVC.Data;
 using ASPDotNetMVC.Models;
+using PagedList;
 
 namespace ASPDotNetMVC.Controllers
 {
@@ -16,9 +17,71 @@ namespace ASPDotNetMVC.Controllers
         private ASPDotNetMVCContext db = new ASPDotNetMVCContext();
 
         // GET: Employees
-        public ActionResult Index(string searchString)
+        public ViewResult Index(string sortOrder, string currentFilter,  string searchString, int ?page)
         {
-            return View(db.Employees.Where(x => x.Forename.Contains(searchString) || x.Surname.Contains(searchString) || searchString == null).ToList());
+            // Get data from Database
+            var employees = from e in db.Employees
+                select e;
+
+            #region Sorting
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm  = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewBag.ForeNameParm = sortOrder == "Forename" ? "Forename_desc" : "Forename";
+            
+            // Sort
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    employees = employees.OrderByDescending(e => e.Surname);
+                    break;
+                case "Date":
+                    employees = employees.OrderBy(e => e.Start_Date);
+                    break;
+                case "date_desc":
+                    employees = employees.OrderByDescending(e => e.Start_Date);
+                    break;
+                case "Forename":
+                    employees = employees.OrderBy(e => e.Forename);
+                    break;
+                case "Forename_desc":
+                    employees = employees.OrderByDescending(e => e.Forename);
+                    break;
+                default:
+                    employees = employees.OrderBy(s => s.Surname);
+                    break;
+            }
+            #endregion
+
+            #region Search
+            // Check if we have searched already or not 
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                // If we searched shows filter
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            // Search 
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                employees = employees.Where(e => e.Forename.Contains(searchString)
+                                                 || e.Forename.Contains(searchString));
+            }
+            
+            #endregion
+            
+            // How many datum can be in one page(Could be changed to give dynamic page data like 5,10,15,20 and etc.)
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+            
+
+            return View( employees.ToPagedList(pageNumber,  pageSize));
         }
 
         // GET: Employees/Details/5
